@@ -14,10 +14,10 @@ class Ship:
         dots = []
 
         if self.direction == 'horizontal':
-            for x in list(range(self.x, self.x+self.length)):
+            for x in range(self.length):
                 dots.append(Dot(x, self.y))
         elif self.direction == 'vertical':
-            for y in list(range(self.y, self.y+self.length)):
+            for y in range(self.length):
                 dots.append(Dot(self.x, y))
 
         return dots
@@ -33,6 +33,7 @@ class Ship:
         return contour_dots
 
     def hit(self, dot):
+        print(self.dots)
         if dot in self.dots:
             self.hp -= 1
             return True

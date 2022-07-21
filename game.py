@@ -16,9 +16,14 @@ class Game:
         self.user = User(self.user_board, self.ai_board)
 
     def random_board(self, hidden=True):
-        board = Board(hidden, self.size)
+        board = None
+        while board is None:
+            board = self.fill_random_board(hidden)
+        return board
 
+    def fill_random_board(self, hidden=True):
         tries = 0
+        board = Board(hidden, self.size)
 
         for length in [3, 2, 2, 1, 1, 1, 1]:
             while True:
@@ -31,8 +36,9 @@ class Game:
                     x = randint(0, self.size - 1)
                     y = randint(0, self.size - 1)
                     direction = self.random_direction()
-                    # print(f'{x+1}:{y+1} / {direction} / {length}')
+                    print(f'{x+1}:{y+1} / {direction} / {length}')
                     board.add_ship(length, x, y, direction)
+
                     break
                 except BoardWrongShipException:
                     pass
@@ -66,10 +72,10 @@ class Game:
 
                 self.draw_boards()
 
-                if not self.user.enemy_board.has_live_ships():
+                if not self.user_board.has_live_ships():
                     print('Congrats! You won!')
                     break
-                elif not self.user.own_board.has_live_ships():
+                elif not self.ai_board.has_live_ships():
                     print('Sorry! AI won!')
                     break
 

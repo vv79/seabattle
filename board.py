@@ -40,21 +40,17 @@ class Board:
         for dot in ship.dots:
             self.fields[dot.x][dot.y] = "■"
             self.ships_dots.append(dot)
-            for contour_dot in ship.contour_dots:
-                if not self.out(contour_dot)or dot in self.ships_dots:
-                    self.contour_dots.append(contour_dot)
 
         self.ships.append(ship)
         self.contour(ship)
 
-    def contour(self, ship, verb=False):
-        pass
-        # for dot in ship.dots:
-        #     for sibling in dot.siblings:
-        #         if not (self.out(sibling)) and sibling not in self.busy_dots:
-        #             if verb:
-        #                 self.fields[sibling.x][sibling.y] = "."
-        #             self.busy_dots.append(sibling)
+    def contour(self, ship, replace = False):
+        for contour_dot in ship.contour_dots:
+            if not (self.out(contour_dot)) and contour_dot not in self.ships_dots:
+                if replace:
+                    self.fields[contour_dot.x][contour_dot.y] = "."
+
+                self.contour_dots.append(contour_dot)
 
     def __str__(self):
         string = "  | " + " | ".join(str(i + 1) for i in range(self.size)) + " |"
@@ -84,6 +80,7 @@ class Board:
                 self.fields[dot.x][dot.y] = "X"
                 if ship.destroyed():
                     print("The ship is destroyed!")
+                    self.contour(ship, True)
                     for ship_dot in ship.contour_dots:
                         self.fields[ship_dot.x][ship_dot.y] = "."
                     return False
