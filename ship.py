@@ -14,19 +14,22 @@ class Ship:
 
     @property
     def dots(self):
-        dots = []
+        ship_dots = []
+        for i in range(self.length):
+            cur_x = self.x
+            cur_y = self.y
 
-        if self.direction == 'horizontal':
-            for x in range(self.length):
-                dots.append(Dot(x, self.y))
-        elif self.direction == 'vertical':
-            for y in range(self.length):
-                dots.append(Dot(self.x, y))
+            if self.direction == 'horizontal':
+                cur_x += i
 
-        return dots
+            elif self.direction == 'vertical':
+                cur_y += i
+
+            ship_dots.append(Dot(cur_x, cur_y))
+
+        return ship_dots
 
     def hit(self, dot):
-        print(self.dots)
         if dot in self.dots:
             self.hp -= 1
             return True

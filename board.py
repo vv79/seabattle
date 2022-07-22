@@ -27,6 +27,9 @@ class Board:
         self.busy = []
         self.fields = [["O"] * size for _ in range(size)]
 
+    def reset(self):
+        self.busy = []
+
     def add_ship(self, ship):
         for dot in ship.dots:
             if self.out(dot) or dot in self.busy:
@@ -41,9 +44,9 @@ class Board:
 
     def contour(self, ship, show=False):
         contour = [
-            (-1, -1), (-1, 0) , (-1, 1),
-            (0, -1), (0 , 1),
-            (1, -1), (1, 0) , (1, 1)
+            (-1, -1), (-1, 0), (-1, 1),
+            (0, -1), (0, 1),
+            (1, -1), (1, 0), (1, 1)
         ]
         for dot in ship.dots:
             for x, y in contour:
@@ -55,10 +58,10 @@ class Board:
                     self.busy.append(contour_dot)
 
     def __str__(self):
-        string = "  | " + " | ".join(str(i + 1) for i in range(self.size)) + " |"
+        string = "  | " + " | ".join(str(i + 1) for i in range(self.size))
 
         for i, row in enumerate(self.fields):
-            string += f"\n{i + 1} | " + " | ".join(row) + " |"
+            string += f"\n{i + 1} | " + " | ".join(row)
 
         if self.hidden:
             string = string.replace("■", "O")
@@ -66,7 +69,7 @@ class Board:
         return string
 
     def out(self, dot):
-        return not ((0 <= dot.x < self.size) and (0 <= dot.y < self.size))
+        return dot.x >= self.size or dot.x < 0 or dot.y >= self.size or dot.y < 0
 
     def shot(self, dot):
         if dot in self.busy:
@@ -87,11 +90,11 @@ class Board:
                 else:
                     print("The ship is hit!")
                     return True
-            else:
-                self.fields[dot.x][dot.y] = "."
-                print("Miss!")
 
-                return False
+        self.fields[dot.x][dot.y] = "."
+        print("Miss!")
+
+        return False
 
     @property
     def live_ships(self):

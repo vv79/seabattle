@@ -24,26 +24,27 @@ class Game:
         return board
 
     def fill_random_board(self, hidden=True):
-        tries = 0
         board = Board(hidden, self.size)
-
-        for length in [3, 2, 2, 1, 1, 1]:
+        for length in [3, 2, 2, 1, 1, 1, 1]:
+            tries = 0
             while True:
                 tries += 1
-
-                if tries > 10:
+                if tries > 1000:
                     return None
 
-                x = randint(0, self.size - 1)
-                y = randint(0, self.size - 1)
+                x = randint(0, self.size-1)
+                y = randint(0, self.size-1)
                 direction = self.random_direction()
-                ship = Ship(length, x, y, direction)
+
+                ship = Ship(length, y, x, direction)
+
                 try:
                     board.add_ship(ship)
                     break
                 except BoardWrongShipException:
                     pass
 
+        board.reset()
         return board
 
     def random_direction(self):
@@ -73,10 +74,10 @@ class Game:
 
                 self.draw_boards()
 
-                if not self.user_board.has_live_ships():
+                if not self.ai_board.has_live_ships():
                     print('Congrats! You won!')
                     break
-                elif not self.ai_board.has_live_ships():
+                elif not self.user_board.has_live_ships():
                     print('Sorry! AI won!')
                     break
 

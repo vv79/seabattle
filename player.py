@@ -21,7 +21,7 @@ class Player:
                     print('Enter digits!')
                     continue
 
-                if x not in range(1, self.enemy_board.size+1) or y not in range(1, self.enemy_board.size+1):
+                if x not in range(0, self.enemy_board.size+1) or y not in range(1, self.enemy_board.size+1):
                     raise BoardShootOffException()
 
             except Exception as exception:
@@ -43,7 +43,7 @@ class Player:
 
 class AI(Player):
     def ask(self):
-        dot = Dot(randint(0, self.enemy_board.size-1), randint(0, self.enemy_board.size-1))
+        dot = Dot(randint(0, self.enemy_board.size), randint(0, self.enemy_board.size))
         print("-------------------")
         print("  Enemy turn  ")
         print("-------------------")

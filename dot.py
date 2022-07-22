@@ -7,4 +7,4 @@ class Dot:
         return self.x == other.x and self.y == other.y
 
     def __repr__(self):
-        return f'{self.x+1}:{self.y+1}'
+        return f"({self.x+1}, {self.y+1})"
