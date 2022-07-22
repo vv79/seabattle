@@ -1,5 +1,6 @@
 from random import randint
 from player import AI, User
+from ship import Ship
 from board import Board, BoardException, BoardWrongShipException
 
 
@@ -19,26 +20,26 @@ class Game:
         board = None
         while board is None:
             board = self.fill_random_board(hidden)
+
         return board
 
     def fill_random_board(self, hidden=True):
         tries = 0
         board = Board(hidden, self.size)
 
-        for length in [3, 2, 2, 1, 1, 1, 1]:
+        for length in [3, 2, 2, 1, 1, 1]:
             while True:
                 tries += 1
 
-                if tries > 3000:
+                if tries > 10:
                     return None
 
+                x = randint(0, self.size - 1)
+                y = randint(0, self.size - 1)
+                direction = self.random_direction()
+                ship = Ship(length, x, y, direction)
                 try:
-                    x = randint(0, self.size - 1)
-                    y = randint(0, self.size - 1)
-                    direction = self.random_direction()
-                    print(f'{x+1}:{y+1} / {direction} / {length}')
-                    board.add_ship(length, x, y, direction)
-
+                    board.add_ship(ship)
                     break
                 except BoardWrongShipException:
                     pass

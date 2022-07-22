@@ -1,4 +1,3 @@
-from ship import Ship
 from dot import Dot
 
 
@@ -25,32 +24,35 @@ class Board:
         self.hidden = hidden
         self.size = size
         self.ships = []
-        self.ships_dots = []
-        self.contour_dots = []
-        self.shotted_dots = []
+        self.busy = []
         self.fields = [["O"] * size for _ in range(size)]
 
-    def add_ship(self, length, x, y, direction):
-        ship = Ship(length, x, y, direction)
-
+    def add_ship(self, ship):
         for dot in ship.dots:
-            if self.out(dot) or dot in self.ships_dots or dot in self.contour_dots:
+            if self.out(dot) or dot in self.busy:
                 raise BoardWrongShipException()
 
         for dot in ship.dots:
             self.fields[dot.x][dot.y] = "■"
-            self.ships_dots.append(dot)
+            self.busy.append(dot)
 
         self.ships.append(ship)
         self.contour(ship)
 
-    def contour(self, ship, replace = False):
-        for contour_dot in ship.contour_dots:
-            if not (self.out(contour_dot)) and contour_dot not in self.ships_dots:
-                if replace:
-                    self.fields[contour_dot.x][contour_dot.y] = "."
+    def contour(self, ship, show=False):
+        contour = [
+            (-1, -1), (-1, 0) , (-1, 1),
+            (0, -1), (0 , 1),
+            (1, -1), (1, 0) , (1, 1)
+        ]
+        for dot in ship.dots:
+            for x, y in contour:
+                contour_dot = Dot(dot.x + x, dot.y + y)
+                if not self.out(contour_dot) and contour_dot not in self.busy:
+                    if show:
+                        self.fields[contour_dot.x][contour_dot.y] = "."
 
-                self.contour_dots.append(contour_dot)
+                    self.busy.append(contour_dot)
 
     def __str__(self):
         string = "  | " + " | ".join(str(i + 1) for i in range(self.size)) + " |"
@@ -67,13 +69,13 @@ class Board:
         return not ((0 <= dot.x < self.size) and (0 <= dot.y < self.size))
 
     def shot(self, dot):
-        if dot in self.shotted_dots:
+        if dot in self.busy:
             raise BoardAlreadyShottedException()
 
         if self.out(dot):
             raise BoardShootOffException()
 
-        self.shotted_dots.append(dot)
+        self.busy.append(dot)
 
         for ship in self.ships:
             if ship.hit(dot):
@@ -81,8 +83,6 @@ class Board:
                 if ship.destroyed():
                     print("The ship is destroyed!")
                     self.contour(ship, True)
-                    for ship_dot in ship.contour_dots:
-                        self.fields[ship_dot.x][ship_dot.y] = "."
                     return False
                 else:
                     print("The ship is hit!")

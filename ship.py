@@ -9,6 +9,9 @@ class Ship:
         self.y = y
         self.direction = direction
 
+    def __repr__(self):
+        return f'{self.x}:{self.y}:{self.length}:{self.direction}'
+
     @property
     def dots(self):
         dots = []
@@ -21,16 +24,6 @@ class Ship:
                 dots.append(Dot(self.x, y))
 
         return dots
-
-    @property
-    def contour_dots(self):
-        contour_dots = []
-        for dot in self.dots:
-            for sibling in dot.siblings:
-                if sibling not in contour_dots and sibling not in self.dots:
-                    contour_dots.append(sibling)
-
-        return contour_dots
 
     def hit(self, dot):
         print(self.dots)
